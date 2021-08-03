@@ -2,9 +2,7 @@
 # @Author: 红白黑
 # @Date:   2021-08-03 17:12:43
 # @Last Modified by:   红白黑
-# @Last Modified time: 2021-08-03 19:43:14
-from enum import Flag
-from numpy.core.defchararray import mod
+# @Last Modified time: 2021-08-03 20:13:58
 import paddle 
 from paddle import nn
 from paddle.nn import functional as F
@@ -107,7 +105,7 @@ class YOLOV1(nn.Layer):
         objs=paddle.reshape(pobj.clone(), (N,S*S*B)).numpy()
         clses=paddle.reshape(pcls.clone(), (N,S*S,20)).numpy()
 
-        # 根据obj得分 -- 还未调整为分类置信度
+        # 根据obj得分确定nms的排序
         if use_confidence is False:
             sorted_obj=np.argsort(objs, axis=-1) # 排序
         else:
@@ -200,7 +198,7 @@ class YOLOV1(nn.Layer):
         return batch_results
 
 
-
+# 测试代码
 if __name__ == "__main__":
     img_shape=[448, 448, 3]
     data_shape=[1, img_shape[2], img_shape[0], img_shape[1]]

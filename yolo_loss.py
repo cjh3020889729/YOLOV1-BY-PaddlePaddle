@@ -2,7 +2,7 @@
 # @Author: 红白黑
 # @Date:   2021-08-02 23:30:58
 # @Last Modified by:   红白黑
-# @Last Modified time: 2021-08-03 17:10:40
+# @Last Modified time: 2021-08-03 20:14:14
 import paddle 
 from paddle import nn
 from paddle.nn import functional as F
@@ -196,42 +196,42 @@ class YOLOV1Loss(nn.Layer):
 
 
 
+# 测试代码
+if __name__ == "__main__":
+    data_shape=[2, 7, 7, 30]
+    print('Input data shape: ', data_shape)
 
-# if __name__ == "__main__":
-#     data_shape=[2, 7, 7, 30]
-#     print('Input data shape: ', data_shape)
+    import numpy as np
+    pred_xywh=np.random.rand(2, 7, 7, 2*5)
+    pred_xywh[0, :, :, 5]=1.
+    pred_xywh[1, :, :, 9]=1.
+    pred_cls=np.zeros((2, 7, 7, 20))
+    pred_cls[0, :, :, 5]=1.
+    pred_cls[1, :, :, 1]=1.
+    pred_data=np.concatenate([pred_xywh, pred_cls], axis=-1)
+    # print(pred_data.shape) # Input data shape
 
-#     import numpy as np
-#     pred_xywh=np.random.rand(2, 7, 7, 2*5)
-#     pred_xywh[0, :, :, 5]=1.
-#     pred_xywh[1, :, :, 9]=1.
-#     pred_cls=np.zeros((2, 7, 7, 20))
-#     pred_cls[0, :, :, 5]=1.
-#     pred_cls[1, :, :, 1]=1.
-#     pred_data=np.concatenate([pred_xywh, pred_cls], axis=-1)
-#     # print(pred_data.shape) # Input data shape
+    target_xywh=np.random.rand(2, 7, 7, 2*5)
+    target_xywh[0, :, :, 9]=1.
+    target_xywh[1, :, :, 9]=1.
+    target_cls=np.zeros((2, 7, 7, 20))
+    target_cls[0, :, :, 5]=1.
+    target_cls[1, :, :, 2]=1.
+    target_data=np.concatenate([target_xywh, target_cls], axis=-1)
+    # print(target_data.shape) # Model output data shape
 
-#     target_xywh=np.random.rand(2, 7, 7, 2*5)
-#     target_xywh[0, :, :, 9]=1.
-#     target_xywh[1, :, :, 9]=1.
-#     target_cls=np.zeros((2, 7, 7, 20))
-#     target_cls[0, :, :, 5]=1.
-#     target_cls[1, :, :, 2]=1.
-#     target_data=np.concatenate([target_xywh, target_cls], axis=-1)
-#     # print(target_data.shape) # Model output data shape
+    pred_data=paddle.to_tensor(pred_data)
+    pred_data.stop_gradient=False
+    target_data=paddle.to_tensor(target_data)
 
-#     pred_data=paddle.to_tensor(pred_data)
-#     pred_data.stop_gradient=False
-#     target_data=paddle.to_tensor(target_data)
+    loss_func=YOLOV1Loss(nb=2, reduction='mean')
 
-#     loss_func=YOLOV1Loss(nb=2, reduction='mean')
+    # loss_func(pred_data, target_data)
 
-#     # loss_func(pred_data, target_data)
+    loss=loss_func(pred_data, target_data)
+    print(loss.shape)
 
-#     loss=loss_func(pred_data, target_data)
-#     print(loss.shape)
+    loss.backward()
 
-#     loss.backward()
-
-#     print(pred_data.grad.shape)
+    print(pred_data.grad.shape)
     
