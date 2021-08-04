@@ -2,7 +2,7 @@
 # @Author: 红白黑
 # @Date:   2021-08-03 17:12:43
 # @Last Modified by:   红白黑
-# @Last Modified time: 2021-08-03 20:13:58
+# @Last Modified time: 2021-08-04 18:22:34
 import paddle 
 from paddle import nn
 from paddle.nn import functional as F
@@ -107,11 +107,11 @@ class YOLOV1(nn.Layer):
 
         # 根据obj得分确定nms的排序
         if use_confidence is False:
-            sorted_obj=np.argsort(objs, axis=-1) # 排序
+            sorted_obj=np.argsort(-objs, axis=-1) # 排序 -- 升序，取反再排序排序==得到降序的index返回结果
         else:
             max_cls_score=np.max(clses, axis=-1)
             objs*=max_cls_score  # 分类置信度
-            sorted_obj=np.argsort(objs, axis=-1) # 再排序
+            sorted_obj=np.argsort(-objs, axis=-1) # 再排序
         
         # 批量保存结果
         batch_keep=[]

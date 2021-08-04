@@ -2,7 +2,7 @@
 # @Author: 红白黑
 # @Date:   2021-08-03 17:11:44
 # @Last Modified by:   红白黑
-# @Last Modified time: 2021-08-03 19:50:59
+# @Last Modified time: 2021-08-04 18:19:50
 import cv2
 import numpy as np
 from numpy.lib.arraysetops import isin
@@ -13,7 +13,7 @@ def get_evaluate_result(inputs):
         Args:
             inputs: [list]内含batch中每张图片的预测结果: N, B, 6(CLS_ID+CLS_SCORE+XYXY)
         Return:
-            eval_results: [list]用于验证的结果格式: N, (dict)
+            eval_results: [list]用于验证的结果格式: N, (dict) -- dict:{cls_id:[cls_score+xyxy]}
     '''
     N=len(inputs)
     eval_results=[]
